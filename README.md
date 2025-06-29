@@ -29,6 +29,11 @@ relevant sections below.
     - This will read the `jlox` written in `src.jlox` and print the result to the terminal.
   - `npm run compile:src` evaluates `./src.jlox` by default.
 
+A description of `jlox`'s syntax can be found in the Crafting Interpreter's book
+[here](https://craftinginterpreters.com/the-lox-language.html). Also, the tests in
+this repository should give a good sense of the syntax, especially the tests
+found [here](https://github.com/breadoliveoilsalt/jlox-compiler-in-ts/tree/main/compiler/tests).
+
 ## Running tests
 
 - `npm run test`
