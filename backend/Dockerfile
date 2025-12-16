@@ -11,12 +11,8 @@ COPY backend/package*.json ./backend/
 COPY tsconfig.json ./
 COPY backend/tsconfig.json ./backend/
 
-# Copy source code (compiler modules are now in backend/)
+# Copy source code (compiler modules are now under backend/compiler/)
 COPY backend/compiler ./backend/compiler
-COPY backend/parser ./backend/parser
-COPY backend/scanner ./backend/scanner
-COPY backend/errors ./backend/errors
-COPY backend/systemPrint ./backend/systemPrint
 COPY backend/types.ts ./backend/
 COPY backend/index.ts ./backend/
 COPY backend/utils ./backend/utils

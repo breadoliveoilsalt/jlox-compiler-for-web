@@ -1,6 +1,6 @@
 import { compile } from '../compiler';
 import { type ReadLine } from '../types';
-import { CompilerError } from '../errors';
+import { CompilerError } from '../compiler/errors';
 
 /**
  * Converts a code string into a ReadLine function

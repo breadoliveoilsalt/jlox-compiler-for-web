@@ -1,7 +1,7 @@
 import { afterEach, describe, test, expect, vi } from 'vitest';
 import { buildReadLine } from './testHelpers';
 import { compile } from '..';
-import * as outputModule from '../../systemPrint';
+import * as outputModule from '../systemPrint';
 
 describe('control flow and strings', () => {
   afterEach(() => {

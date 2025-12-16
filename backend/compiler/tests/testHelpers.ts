@@ -1,5 +1,5 @@
-import { scan } from '../../scanner';
-import { parse } from '../../parser';
+import { scan } from '../scanner';
+import { parse } from '../parser';
 import { type ReadLine } from '../../types';
 import { expect } from 'vitest';
 import { compile as appCompile } from '../';

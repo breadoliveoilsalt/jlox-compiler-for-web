@@ -1,4 +1,4 @@
-import { type ReadLine } from '../index';
+import { type ReadLine } from '../../types';
 import { CompilerError, GrammarError } from '../errors';
 import { type Tokens } from './types';
 
