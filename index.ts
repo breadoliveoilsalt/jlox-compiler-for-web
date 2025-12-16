@@ -1,10 +1,10 @@
 import * as fs from 'node:fs';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
-import { compile } from './compiler';
-import { type Environment } from './parser/types';
-import { CompilerError } from './errors';
-import { systemPrint } from './systemPrint';
+import { compile } from './backend/compiler';
+import { type Environment } from './backend/parser/types';
+import { CompilerError } from './backend/errors';
+import { systemPrint } from './backend/systemPrint';
 
 async function fileLineReader({ filePath }: { filePath: string }) {
   const file = fs.readFileSync(filePath, 'utf8');
@@ -18,7 +18,8 @@ async function fileLineReader({ filePath }: { filePath: string }) {
   };
 }
 
-export type ReadLine = () => Promise<string | false>;
+// ReadLine type moved to backend/types.ts
+export type { ReadLine } from './backend/types';
 
 async function evaluateFile({ filePath }: { filePath: string }) {
   systemPrint(`\n----- Evaluating file ${filePath} -----\n`);

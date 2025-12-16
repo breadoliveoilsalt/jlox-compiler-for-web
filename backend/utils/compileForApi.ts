@@ -1,6 +1,6 @@
-import { compile } from '../../compiler';
-import { type ReadLine } from '../../index';
-import { CompilerError } from '../../errors';
+import { compile } from '../compiler';
+import { type ReadLine } from '../types';
+import { CompilerError } from '../errors';
 
 /**
  * Converts a code string into a ReadLine function
@@ -20,7 +20,7 @@ function createReadLineFromCode(code: string): ReadLine {
 /**
  * Compiles and evaluates jlox code for API use
  * Returns structured response with result, output, and error
- * 
+ *
  * Note: This function temporarily patches console.log to capture print statements.
  * This is necessary because systemPrint uses console.log internally.
  */
@@ -31,17 +31,17 @@ export async function compileForApi(code: string): Promise<{
 }> {
   const outputs: string[] = [];
   const originalConsoleLog = console.log;
-  
+
   // Patch console.log to capture jlox print statements
   // We use a flag to only capture during compilation
   let isCapturing = true;
-  
+
   console.log = (...args: any[]) => {
     if (isCapturing) {
       // Only capture if we're in compilation mode
-      const output = args.map(arg => 
-        arg === null || arg === undefined ? 'nil' : String(arg)
-      ).join(' ');
+      const output = args
+        .map((arg) => (arg === null || arg === undefined ? 'nil' : String(arg)))
+        .join(' ');
       outputs.push(output);
     }
     // Always call original to maintain behavior
@@ -51,14 +51,15 @@ export async function compileForApi(code: string): Promise<{
   try {
     const readLine = createReadLineFromCode(code);
     const { result } = await compile(readLine);
-    
+
     // Stop capturing before we restore
     isCapturing = false;
     console.log = originalConsoleLog;
-    
+
     // Format result
-    const formattedResult = result === null || result === undefined ? null : result;
-    
+    const formattedResult =
+      result === null || result === undefined ? null : result;
+
     return {
       result: formattedResult,
       output: outputs,
@@ -68,7 +69,7 @@ export async function compileForApi(code: string): Promise<{
     // Stop capturing and restore
     isCapturing = false;
     console.log = originalConsoleLog;
-    
+
     if (e instanceof CompilerError) {
       const { name, message, lineNumber } = e;
       return {
@@ -91,4 +92,3 @@ export async function compileForApi(code: string): Promise<{
     }
   }
 }
-

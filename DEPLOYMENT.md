@@ -6,13 +6,16 @@ This guide covers deploying the jlox compiler web application to Kubernetes.
 
 ```
 jlox-compiler-for-web/
-├── backend/          # Express API server
+├── backend/          # Express API server + compiler logic
+│   ├── compiler/     # Core jlox compiler logic
+│   ├── parser/       # AST parser
+│   ├── scanner/      # Token scanner
+│   ├── errors/       # Error classes
+│   ├── systemPrint/  # Print functionality
+│   └── utils/        # API utilities
 ├── frontend/         # React + Tailwind frontend
-├── compiler/         # Core jlox compiler logic
-├── parser/           # AST parser
-├── scanner/          # Token scanner
 ├── k8s/              # Kubernetes manifests
-└── Dockerfiles       # Container definitions
+└── index.ts          # Original CLI (imports from backend/)
 ```
 
 ## Quick Start

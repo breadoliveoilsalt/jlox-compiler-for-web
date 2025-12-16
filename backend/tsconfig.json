@@ -6,11 +6,11 @@
   },
   "include": [
     "**/*.ts",
-    "../compiler/**/*.ts",
-    "../parser/**/*.ts",
-    "../scanner/**/*.ts",
-    "../errors/**/*.ts",
-    "../systemPrint/**/*.ts"
+    "compiler/**/*.ts",
+    "parser/**/*.ts",
+    "scanner/**/*.ts",
+    "errors/**/*.ts",
+    "systemPrint/**/*.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }
