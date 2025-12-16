@@ -5,6 +5,7 @@ import { compile } from './backend/compiler';
 import { type Environment } from './backend/parser/types';
 import { CompilerError } from './backend/errors';
 import { systemPrint } from './backend/systemPrint';
+import { type ReadLine } from './backend/types';
 
 async function fileLineReader({ filePath }: { filePath: string }) {
   const file = fs.readFileSync(filePath, 'utf8');
