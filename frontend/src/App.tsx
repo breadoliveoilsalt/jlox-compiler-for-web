@@ -4,7 +4,8 @@ import { type EvaluateResponse } from './types';
 
 // Use environment variable if set, otherwise default to localhost for dev
 // In Kubernetes with Ingress, use relative URL '/api'
-const API_URL = import.meta.env.VITE_API_URL ||
+const API_URL =
+  import.meta.env.VITE_API_URL ||
   (import.meta.env.PROD ? '/api' : 'http://localhost:3001');
 
 function App() {
@@ -35,14 +36,17 @@ function App() {
       setResult({
         result: null,
         output: [],
-        error: error instanceof Error ? error.message : 'Failed to connect to server',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to connect to server',
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const formatResult = (value: any): string => {
+  const formatResult = (value: unknown): string => {
     if (value === null || value === undefined) {
       return 'nil';
     }
@@ -53,18 +57,21 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
+        <h1 className="text-5xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
           jlox Compiler
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Editor Section */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-8">
             {/* Code Input */}
             <div>
-              <label htmlFor="code-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="code-input"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3"
+              >
                 Enter jlox code:
               </label>
               <textarea
@@ -72,10 +79,11 @@ function App() {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="var x = 10;&#10;print x;"
-                className="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg
+                className="w-full h-96 p-5 border-2 border-gray-300 dark:border-gray-600 rounded-xl
                          bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-                         font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                         resize-none"
+                         font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                         resize-none shadow-sm hover:shadow-md transition-shadow duration-200
+                         placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
             </div>
 
@@ -83,20 +91,25 @@ function App() {
             <button
               onClick={handleEvaluate}
               disabled={isLoading || !code.trim()}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400
-                       text-white font-semibold py-3 px-6 rounded-lg
-                       transition-colors duration-200 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700
+                       disabled:from-gray-400 disabled:to-gray-500
+                       text-white font-semibold py-4 px-6 rounded-xl
+                       transition-all duration-200 disabled:cursor-not-allowed
+                       shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none
+                       disabled:shadow-none"
             >
               {isLoading ? 'Evaluating...' : 'Evaluate'}
             </button>
 
             {/* Result Display */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                 Result:
               </label>
-              <div className="min-h-32 p-4 border border-gray-300 dark:border-gray-600 rounded-lg
-                            bg-white dark:bg-gray-800 font-mono text-sm">
+              <div
+                className="min-h-40 p-5 border-2 border-gray-300 dark:border-gray-600 rounded-xl
+                            bg-white dark:bg-gray-800 font-mono text-sm shadow-sm"
+              >
                 {result === null ? (
                   <p className="text-gray-400 dark:text-gray-500 italic">
                     Results will appear here...
@@ -105,16 +118,19 @@ function App() {
                   <div className="space-y-2">
                     {/* Error Display */}
                     {result.error && (
-                      <div className="text-red-600 dark:text-red-400">
-                        <strong>Error:</strong> {result.error}
+                      <div className="p-3 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded text-red-700 dark:text-red-400">
+                        <strong className="font-semibold">Error:</strong>{' '}
+                        {result.error}
                       </div>
                     )}
 
                     {/* Print Output */}
                     {result.output.length > 0 && (
-                      <div className="text-gray-700 dark:text-gray-300">
-                        <strong>Output:</strong>
-                        <ul className="list-disc list-inside ml-2 mt-1">
+                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded text-gray-700 dark:text-gray-300">
+                        <strong className="font-semibold text-blue-700 dark:text-blue-400">
+                          Output:
+                        </strong>
+                        <ul className="list-disc list-inside ml-2 mt-2 space-y-1">
                           {result.output.map((line, idx) => (
                             <li key={idx}>{line}</li>
                           ))}
@@ -124,8 +140,13 @@ function App() {
 
                     {/* Final Result */}
                     {!result.error && (
-                      <div className="text-gray-900 dark:text-gray-100">
-                        <strong>Result:</strong> {formatResult(result.result)}
+                      <div className="p-3 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded text-gray-900 dark:text-gray-100">
+                        <strong className="font-semibold text-green-700 dark:text-green-400">
+                          Result:
+                        </strong>{' '}
+                        <span className="ml-2">
+                          {formatResult(result.result)}
+                        </span>
                       </div>
                     )}
                   </div>
