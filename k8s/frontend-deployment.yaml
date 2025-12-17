@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: jlox-frontend:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:

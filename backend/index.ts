@@ -19,8 +19,8 @@ app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
-// Evaluate jlox code
-app.post('/evaluate', async (req: Request, res: Response) => {
+// Handler for evaluate endpoint
+const evaluateHandler = async (req: Request, res: Response) => {
   try {
     const { code } = req.body;
 
@@ -35,14 +35,18 @@ app.post('/evaluate', async (req: Request, res: Response) => {
     const result = await compileForApi(code);
     res.json(result);
   } catch (error) {
-    console.error('Unexpected error in /api/evaluate:', error);
+    console.error('Unexpected error in evaluate:', error);
     res.status(500).json({
       result: null,
       output: [],
       error: error instanceof Error ? error.message : 'Internal server error',
     });
   }
-});
+};
+
+// Evaluate jlox code - support both /evaluate and /api/evaluate for ingress routing
+app.post('/evaluate', evaluateHandler);
+app.post('/api/evaluate', evaluateHandler);
 
 app.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`);
