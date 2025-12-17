@@ -13,11 +13,16 @@ This guide walks you through deploying the jlox compiler web application to AWS 
 3. **kubectl** installed (see `k8s/README.md` for installation)
 4. **eksctl** (recommended) or AWS Console for cluster creation
 
-    ```bash
-    # Install eksctl (macOS)
-    brew install eksctl
+    For AWS-sanctioned installation instructions, see: [Installation options for eksctl](https://docs.aws.amazon.com/eks/latest/eksctl/installation.html)
 
-    # Or download from: https://github.com/weaveworks/eksctl/releases
+    Quick install options:
+
+    ```bash
+    # Install eksctl (macOS/Linux with Homebrew)
+    brew tap aws/tap
+    brew install aws/tap/eksctl
+
+    # Or download from: https://github.com/eksctl-io/eksctl/releases
     ```
 
 5. **Docker** installed and running
