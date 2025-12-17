@@ -24,10 +24,22 @@ if ! kubectl cluster-info &>/dev/null; then
   exit 1
 fi
 
-# Verify cluster name matches
+# Verify cluster name matches and warn if pointing to minikube
 CURRENT_CONTEXT=$(kubectl config current-context)
-if [[ ! "$CURRENT_CONTEXT" == *"$CLUSTER_NAME"* ]]; then
+if [[ "$CURRENT_CONTEXT" == *"minikube"* ]]; then
+  echo "⚠️  WARNING: kubectl is currently pointing to minikube, not EKS!"
+  echo "   Current context: $CURRENT_CONTEXT"
+  echo "   Expected cluster: $CLUSTER_NAME"
+  echo ""
+  echo "   To switch to EKS, run:"
+  echo "   aws eks update-kubeconfig --name $CLUSTER_NAME --region $REGION"
+  echo ""
+  exit 1
+fi
+
+if [[ ! "$CURRENT_CONTEXT" == *"$CLUSTER_NAME"* ]] && [[ ! "$CURRENT_CONTEXT" == *"eks"* ]]; then
   echo "Warning: Current kubectl context ($CURRENT_CONTEXT) may not match cluster name ($CLUSTER_NAME)"
+  echo "Expected context to contain '$CLUSTER_NAME' or 'eks'"
   read -p "Continue anyway? (y/N) " -n 1 -r
   echo
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then

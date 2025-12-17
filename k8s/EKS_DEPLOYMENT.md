@@ -180,13 +180,48 @@ image: <your-account-id>.dkr.ecr.<your-region>.amazonaws.com/jlox-frontend:lates
 
 Replace `<your-account-id>` and `<your-region>` with your actual values.
 
-## Step 5: Configure Frontend for Production
+## Step 5: Configure kubectl for EKS
+
+⚠️ **IMPORTANT**: If you've been using minikube locally, kubectl is likely pointing to your minikube cluster. You must switch to your EKS cluster before deploying.
+
+### Verify Current Context
+
+```bash
+# Check which cluster kubectl is currently pointing to
+kubectl config current-context
+
+# List all available contexts
+kubectl config get-contexts
+```
+
+### Configure kubectl for EKS
+
+```bash
+# Set your cluster name and region
+export CLUSTER_NAME=jlox-cluster
+export REGION=us-east-1
+
+# Configure kubectl to use your EKS cluster
+aws eks update-kubeconfig --name $CLUSTER_NAME --region $REGION
+
+# Verify you're connected to the correct cluster
+kubectl config current-context
+# Should show something like: arn:aws:eks:us-east-1:123456789012:cluster/jlox-cluster
+
+# Verify you can access the cluster
+kubectl get nodes
+# Should show your EKS worker nodes (not minikube)
+```
+
+**Note**: If you see `minikube` in the context name or minikube nodes, you're still connected to minikube. Make sure to run `aws eks update-kubeconfig` and verify the context changed.
+
+## Step 6: Configure Frontend for Production
 
 The frontend needs to use a relative `/api` URL when deployed with Ingress. This is already configured via the `VITE_API_URL` environment variable.
 
-For EKS with Ingress, we'll set this during deployment (see Step 6).
+For EKS with Ingress, we'll set this during deployment (see Step 7).
 
-## Step 6: Deploy to EKS
+## Step 7: Deploy to EKS
 
 ### Option A: Using Helper Script
 
@@ -224,7 +259,7 @@ kubectl get service jlox-frontend-service -w
 
 #### Using Ingress with AWS Load Balancer Controller (Recommended)
 
-##### 6.1 Install AWS Load Balancer Controller
+###### 7.1 Install AWS Load Balancer Controller
 
 ```bash
 # Add the EKS chart repo
@@ -244,7 +279,7 @@ kubectl get deployment -n kube-system aws-load-balancer-controller
 
 **Note:** If the above fails, you may need to create the IAM service account first. See [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html).
 
-##### 6.2 Build Frontend for Production (if not already done)
+##### 7.2 Build Frontend for Production (if not already done)
 
 If you haven't already built the frontend with `/api` URL in Step 3, do it now:
 
@@ -268,7 +303,7 @@ kubectl set image deployment/jlox-frontend \
   frontend=$AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/jlox-frontend:latest
 ```
 
-##### 6.3 Apply Ingress
+##### 7.3 Apply Ingress
 
 ```bash
 # Apply ingress (update host if needed)
