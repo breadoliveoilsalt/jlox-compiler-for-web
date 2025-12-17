@@ -16,6 +16,10 @@ COPY frontend/index.html ./
 COPY frontend/public ./public
 
 # Install dependencies and build
+# Support build-time environment variables (e.g., VITE_API_URL)
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm ci
 RUN npm run build
 

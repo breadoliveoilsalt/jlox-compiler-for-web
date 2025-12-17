@@ -20,6 +20,10 @@ This repository is public. Please follow these security guidelines:
 - No hardcoded secrets in manifests
 - Use Kubernetes Secrets for sensitive data (not included in this repo)
 - Image URLs use placeholders - replace with actual ECR/registry URLs during deployment
+- **⚠️ EKS Deployment**: The `update-deployments.sh` script modifies YAML files with ECR URLs containing your AWS Account ID
+  - **DO NOT commit** these modified files to a public repository
+  - Consider using kustomize, environment variable substitution, or CI/CD pipelines instead
+  - Always review `git diff` before committing deployment files
 
 ### Docker
 - No secrets in Dockerfiles

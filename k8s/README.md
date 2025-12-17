@@ -116,6 +116,10 @@ kubectl apply -f k8s/ingress.yaml
 
 ## AWS EKS Deployment
 
+**For detailed EKS deployment instructions, see [EKS_DEPLOYMENT.md](./EKS_DEPLOYMENT.md)**
+
+Quick reference:
+
 ### 1. Build and push images to ECR
 
 ```bash

@@ -23,31 +23,35 @@ jlox-compiler-for-web/
 ### Local Development
 
 1. **Start Backend:**
-   ```bash
-   cd backend
-   npm install
-   npm run dev
-   ```
+
+    ```bash
+    cd backend
+    npm install
+    npm run dev
+    ```
 
 2. **Start Frontend:**
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+
+    ```bash
+    cd frontend
+    npm install
+    npm run dev
+    ```
 
 3. **Access:**
-   - Frontend: http://localhost:5173
-   - Backend: http://localhost:3001
+    - Frontend: http://localhost:5173
+    - Backend: http://localhost:3001
 
 ## Building Docker Images
 
 ### Backend
+
 ```bash
 docker build -t jlox-backend:latest -f backend/Dockerfile .
 ```
 
 ### Frontend
+
 ```bash
 docker build -t jlox-frontend:latest -f frontend/Dockerfile .
 ```
@@ -77,70 +81,80 @@ minikube service jlox-frontend-service
 
 ### Quick Deploy to AWS EKS
 
-1. Build and push to ECR (see k8s/README.md)
-2. Update image URLs in deployment files
-3. Apply manifests:
-   ```bash
-   kubectl apply -f k8s/
-   ```
+**For complete EKS deployment instructions, see [k8s/EKS_DEPLOYMENT.md](./k8s/EKS_DEPLOYMENT.md)**
+
+Quick overview:
+
+1. Create EKS cluster (see EKS_DEPLOYMENT.md)
+2. Set up ECR repositories: `./k8s/scripts/setup-ecr.sh`
+3. Build and push images: `./k8s/scripts/build-and-push.sh`
+4. Update deployment manifests with ECR URLs
+5. Deploy: `./k8s/scripts/deploy-to-eks.sh`
+
+⚠️ **Security**: Never commit deployment files with ECR URLs containing your AWS Account ID.
 
 ## Environment Variables
 
 ### Backend
-- `PORT` - Server port (default: 3001)
-- `ALLOWED_ORIGINS` - Comma-separated list of allowed CORS origins (optional)
-  - Example: `https://example.com,https://www.example.com`
-  - If not set, allows all origins (development mode)
+
+-   `PORT` - Server port (default: 3001)
+-   `ALLOWED_ORIGINS` - Comma-separated list of allowed CORS origins (optional)
+    -   Example: `https://example.com,https://www.example.com`
+    -   If not set, allows all origins (development mode)
 
 ### Frontend
-- `VITE_API_URL` - Backend API URL
-  - Local dev: `http://localhost:3001`
-  - Kubernetes: `/api` (when using Ingress) or backend service URL
+
+-   `VITE_API_URL` - Backend API URL
+    -   Local dev: `http://localhost:3001`
+    -   Kubernetes: `/api` (when using Ingress) or backend service URL
 
 ## Security
 
 ⚠️ **This repository is public.** See [SECURITY.md](./SECURITY.md) for security guidelines.
 
-- Never commit `.env` files or secrets
-- Use environment variables for configuration
-- Configure CORS properly for production
-- Use Kubernetes Secrets for sensitive data
+-   Never commit `.env` files or secrets
+-   Use environment variables for configuration
+-   Configure CORS properly for production
+-   Use Kubernetes Secrets for sensitive data
 
 ## Architecture
 
-- **Frontend**: React SPA served by nginx
-- **Backend**: Express API server
-- **Communication**: REST API (POST /api/evaluate)
-- **State**: Stateless (each request is independent)
+-   **Frontend**: React SPA served by nginx
+-   **Backend**: Express API server
+-   **Communication**: REST API (POST /api/evaluate)
+-   **State**: Stateless (each request is independent)
 
 ## API Endpoints
 
 ### POST /api/evaluate
+
 Evaluates jlox code.
 
 **Request:**
+
 ```json
 {
-  "code": "var x = 10;\nprint x;"
+    "code": "var x = 10;\nprint x;"
 }
 ```
 
 **Response:**
+
 ```json
 {
-  "result": null,
-  "output": ["10"],
-  "error": null
+    "result": null,
+    "output": ["10"],
+    "error": null
 }
 ```
 
 ### GET /health
+
 Health check endpoint.
 
 ## Troubleshooting
 
-- **CORS errors**: Ensure backend CORS is configured
-- **API connection**: Check VITE_API_URL environment variable
-- **Kubernetes networking**: Verify service selectors and port mappings
-- **Image pull errors**: Ensure images are available in cluster
-
+-   **CORS errors**: Ensure backend CORS is configured
+-   **API connection**: Check VITE_API_URL environment variable
+-   **Kubernetes networking**: Verify service selectors and port mappings
+-   **Image pull errors**: Ensure images are available in cluster
