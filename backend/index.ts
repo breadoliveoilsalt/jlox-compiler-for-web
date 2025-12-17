@@ -20,7 +20,7 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 // Evaluate jlox code
-app.post('/api/evaluate', async (req: Request, res: Response) => {
+app.post('/evaluate', async (req: Request, res: Response) => {
   try {
     const { code } = req.body;
 

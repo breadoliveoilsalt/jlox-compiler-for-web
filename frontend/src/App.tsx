@@ -2,11 +2,8 @@ import { useState } from 'react';
 import { CheatSheet } from './CheatSheet';
 import { type EvaluateResponse } from './types';
 
-// Use environment variable if set, otherwise default to localhost for dev
-// In Kubernetes with Ingress, use relative URL '/api'
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.PROD ? '/api' : 'http://localhost:3001');
+// Use environment variable if set, otherwise default to localhost:3001 for port-forward
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 function App() {
   const [code, setCode] = useState('');
@@ -22,7 +19,7 @@ function App() {
     setResult(null);
 
     try {
-      const response = await fetch(`${API_URL}/api/evaluate`, {
+      const response = await fetch(`${API_URL}/evaluate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
