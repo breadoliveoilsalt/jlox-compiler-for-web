@@ -373,33 +373,49 @@ kubectl get ingress jlox-ingress
 
 ## Troubleshooting
 
-### Pods not starting
+For detailed troubleshooting steps, see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md).
+
+### Common Issues
+
+#### Frontend calling wrong API URL
+
+If the frontend is calling `http://localhost:3001/evaluate` instead of `/api/evaluate`:
+
+-   Rebuild frontend with `VITE_API_URL=/api`: `./k8s/scripts/build-frontend-prod.sh $REGION`
+-   Ensure `imagePullPolicy: Always` in frontend deployment
+-   Clear browser cache and hard refresh (Ctrl+Shift+R or Cmd+Shift+R)
+
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md#issue-frontend-calling-wrong-api-url) for detailed steps.
+
+#### Pods not starting
 
 ```bash
 kubectl describe pod <pod-name>
 kubectl logs <pod-name>
 ```
 
-### Image pull errors
+#### Image pull errors
 
 -   Verify ECR authentication: `aws ecr get-login-password --region $REGION`
 -   Check image exists: `aws ecr describe-images --repository-name jlox-backend --region $REGION`
 -   Verify image URL in deployment matches ECR URL
+-   Ensure `imagePullPolicy: Always` when using `:latest` tags
 
-### LoadBalancer stuck in "pending"
+#### LoadBalancer stuck in "pending"
 
 -   Check AWS Load Balancer Controller logs: `kubectl logs -n kube-system deployment/aws-load-balancer-controller`
 -   Verify IAM permissions for the controller service account
 
-### CORS errors
+#### CORS errors
 
 -   Ensure backend `ALLOWED_ORIGINS` environment variable includes your frontend URL
 -   Or set it to allow all origins for testing: `ALLOWED_ORIGINS=*` (not recommended for production)
 
-### Frontend can't reach backend
+#### Frontend can't reach backend
 
 -   Verify Ingress is routing `/api` to backend service
 -   Check backend service is ClusterIP and accessible internally
+-   Ensure backend has both `/evaluate` and `/api/evaluate` routes
 -   Test backend directly: `kubectl port-forward service/jlox-backend-service 3001:3001`
 
 ## Cleanup
