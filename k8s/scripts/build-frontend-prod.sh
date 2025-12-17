@@ -32,9 +32,10 @@ echo "Authenticating Docker with ECR..."
 aws ecr get-login-password --region $REGION | \
   docker login --username AWS --password-stdin $ECR_BASE
 
-# Build frontend with production API URL
-echo "Building frontend image with VITE_API_URL=/api..."
+# Build frontend with production API URL for linux/amd64 (EKS nodes)
+echo "Building frontend image with VITE_API_URL=/api for linux/amd64..."
 docker build \
+  --platform linux/amd64 \
   --build-arg VITE_API_URL=/api \
   --no-cache \
   -f frontend/Dockerfile \

@@ -33,9 +33,9 @@ echo "Authenticating Docker with ECR..."
 aws ecr get-login-password --region $REGION | \
   docker login --username AWS --password-stdin $ECR_BASE
 
-# Build backend
-echo "Building backend image..."
-docker build --no-cache -f backend/Dockerfile -t jlox-backend:latest .
+# Build backend for linux/amd64 (EKS nodes)
+echo "Building backend image for linux/amd64..."
+docker build --platform linux/amd64 --no-cache -f backend/Dockerfile -t jlox-backend:latest .
 
 # Tag backend
 echo "Tagging backend image..."
@@ -45,9 +45,9 @@ docker tag jlox-backend:latest $BACKEND_IMAGE
 echo "Pushing backend image to ECR..."
 docker push $BACKEND_IMAGE
 
-# Build frontend
-echo "Building frontend image..."
-docker build --no-cache -f frontend/Dockerfile -t jlox-frontend:latest .
+# Build frontend for linux/amd64 (EKS nodes)
+echo "Building frontend image for linux/amd64..."
+docker build --platform linux/amd64 --no-cache -f frontend/Dockerfile -t jlox-frontend:latest .
 
 # Tag frontend
 echo "Tagging frontend image..."

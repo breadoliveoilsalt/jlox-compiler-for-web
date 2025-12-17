@@ -25,7 +25,17 @@ This guide walks you through deploying the jlox compiler web application to AWS 
     # Or download from: https://github.com/eksctl-io/eksctl/releases
     ```
 
-5. **Docker** installed and running
+5. **Helm** (required for installing AWS Load Balancer Controller)
+
+    For AWS-sanctioned installation instructions, see: [Deploy applications with Helm on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/helm.html)
+
+    Quick install (macOS):
+
+    ```bash
+    brew install helm
+    ```
+
+6. **Docker** installed and running
 
 ## Step 1: Create EKS Cluster
 
@@ -260,6 +270,8 @@ kubectl get service jlox-frontend-service -w
 #### Using Ingress with AWS Load Balancer Controller (Recommended)
 
 ###### 7.1 Install AWS Load Balancer Controller
+
+**Prerequisite:** Ensure Helm is installed. See [Deploy applications with Helm on Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/helm.html) for installation instructions.
 
 ```bash
 # Add the EKS chart repo
