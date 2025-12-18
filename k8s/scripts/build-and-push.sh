@@ -33,6 +33,14 @@ echo "Authenticating Docker with ECR..."
 aws ecr get-login-password --region $REGION | \
   docker login --username AWS --password-stdin $ECR_BASE
 
+# Optional: build frontend with a specific API base URL
+# Example: VITE_API_URL=/api ./k8s/scripts/build-and-push.sh us-east-1
+FRONTEND_BUILD_ARGS=()
+if [ -n "${VITE_API_URL:-}" ]; then
+  echo "Using VITE_API_URL for frontend build: $VITE_API_URL"
+  FRONTEND_BUILD_ARGS+=(--build-arg "VITE_API_URL=$VITE_API_URL")
+fi
+
 # Build backend for linux/amd64 (EKS nodes)
 echo "Building backend image for linux/amd64..."
 docker build --platform linux/amd64 --no-cache -f backend/Dockerfile -t jlox-backend:latest .
@@ -47,7 +55,7 @@ docker push $BACKEND_IMAGE
 
 # Build frontend for linux/amd64 (EKS nodes)
 echo "Building frontend image for linux/amd64..."
-docker build --platform linux/amd64 --no-cache -f frontend/Dockerfile -t jlox-frontend:latest .
+docker build --platform linux/amd64 --no-cache "${FRONTEND_BUILD_ARGS[@]}" -f frontend/Dockerfile -t jlox-frontend:latest .
 
 # Tag frontend
 echo "Tagging frontend image..."

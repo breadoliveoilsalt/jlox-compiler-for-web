@@ -26,7 +26,7 @@ export REGION=us-east-1  # Your preferred region
 ./k8s/scripts/setup-ecr.sh $REGION
 
 # 2. Build and push images
-./k8s/scripts/build-and-push.sh $REGION
+VITE_API_URL=/api ./k8s/scripts/build-and-push.sh $REGION
 
 # 3. Build frontend for production (with /api URL for Ingress)
 ./k8s/scripts/build-frontend-prod.sh $REGION
@@ -72,6 +72,7 @@ Builds and pushes both backend and frontend Docker images to ECR.
 
 -   `AWS_ACCOUNT_ID` (optional, will be auto-detected)
 -   `AWS_REGION` (optional, defaults to us-east-1)
+-   `VITE_API_URL` (optional) - if set, will be embedded into the frontend build (e.g. set to `/api` when using Ingress)
 
 ### `build-frontend-prod.sh`
 
