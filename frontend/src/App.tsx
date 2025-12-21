@@ -100,7 +100,7 @@ function App() {
               </button>
 
               {/* Result Display */}
-              <div>
+      <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                   Result:
                 </label>
@@ -175,7 +175,7 @@ function App() {
             </a>{' '}
             by Robert Nystrom.
           </p>
-          <p>
+        <p>
             Compilation logic written in TypeScript:{' '}
             <a
               className="underline font-semibold"
@@ -186,8 +186,8 @@ function App() {
               breadoliveoilsalt/jlox-compiler-in-ts
             </a>
             .
-          </p>
-        </div>
+        </p>
+      </div>
       </footer>
     </div>
   );

@@ -420,17 +420,105 @@ kubectl logs <pod-name>
 
 ## Cleanup
 
+This section covers how to destroy resources deployed to AWS EKS using kubectl commands.
+
+### Quick Cleanup (Delete All Resources at Once)
+
+The simplest way to remove all Kubernetes resources:
+
 ```bash
-# Delete all resources
+# Delete all resources from the k8s directory
 kubectl delete -f k8s/
+```
 
-# Delete ECR repositories (optional)
-aws ecr delete-repository --repository-name jlox-backend --region $REGION --force
-aws ecr delete-repository --repository-name jlox-frontend --region $REGION --force
+This command will delete:
+- Deployments (jlox-backend, jlox-frontend)
+- Services (jlox-backend-service, jlox-frontend-service)
+- Ingress (jlox-ingress)
 
-# Delete EKS cluster
+### Step-by-Step Cleanup (More Control)
+
+If you want to delete resources in a specific order or selectively:
+
+```bash
+# 1. Delete Ingress first (depends on Services)
+kubectl delete ingress jlox-ingress
+
+# 2. Delete Services
+kubectl delete service jlox-backend-service
+kubectl delete service jlox-frontend-service
+
+# 3. Delete Deployments (this will also delete associated Pods)
+kubectl delete deployment jlox-backend
+kubectl delete deployment jlox-frontend
+```
+
+### Verify Deletion
+
+After deleting resources, verify they're removed:
+
+```bash
+# Check that all resources are deleted
+kubectl get all
+kubectl get ingress
+kubectl get services
+kubectl get deployments
+```
+
+### Additional Cleanup Options
+
+#### Delete ECR Repositories (Optional)
+
+After deleting Kubernetes resources, you may want to remove the container images:
+
+```bash
+export REGION=us-east-1  # Your region
+
+aws ecr delete-repository \
+  --repository-name jlox-backend \
+  --region $REGION \
+  --force
+
+aws ecr delete-repository \
+  --repository-name jlox-frontend \
+  --region $REGION \
+  --force
+```
+
+#### Delete the EKS Cluster (Complete Removal)
+
+If you want to remove the entire cluster and all associated resources:
+
+```bash
+export CLUSTER_NAME=jlox-cluster
+export REGION=us-east-1
+
 eksctl delete cluster --name $CLUSTER_NAME --region $REGION
 ```
+
+**Note:** Deleting the cluster will automatically remove all Kubernetes resources, but it takes longer (15-20 minutes) and costs more if you want to keep the cluster for other workloads.
+
+### Important Notes
+
+1. **Load Balancers**: If you used a LoadBalancer Service or Ingress with AWS ALB, deleting the Service/Ingress will also delete the AWS Load Balancer. This may take a few minutes to complete.
+
+2. **Persistent Volumes**: If you have PersistentVolumes, delete them separately:
+   ```bash
+   kubectl get pv
+   kubectl delete pv <volume-name>
+   ```
+
+3. **Custom Namespaces**: If resources are deployed in a custom namespace:
+   ```bash
+   kubectl delete -f k8s/ -n <namespace-name>
+   # Or delete the entire namespace (this deletes all resources in it)
+   kubectl delete namespace <namespace-name>
+   ```
+
+4. **AWS Load Balancer Controller**: If you installed the AWS Load Balancer Controller via Helm, you may want to remove it:
+   ```bash
+   helm uninstall aws-load-balancer-controller -n kube-system
+   ```
 
 ## Cost Considerations
 
